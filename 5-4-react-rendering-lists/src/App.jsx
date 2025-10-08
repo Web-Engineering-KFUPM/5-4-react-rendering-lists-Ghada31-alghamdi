@@ -183,8 +183,6 @@ export default function App() {
       </header>
 
       <section className="grid">
-        {/* ✅ TASK 1 already implemented — for reference.
-            Observe how .map() dynamically renders one <CourseCard /> per course. */}
         {courses.map((course, idx) => (
           <CourseCard
             key={course.id}

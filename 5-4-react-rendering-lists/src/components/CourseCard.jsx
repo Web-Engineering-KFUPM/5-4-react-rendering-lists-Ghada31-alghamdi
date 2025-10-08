@@ -7,15 +7,16 @@ export default function CourseCard({ course, index, onMutateCourse }) {
   const [date, setDate] = useState("");
 
 
-  // 📘 TASK 4 — PART A (Anchor): Implement toggle using onMutateCourse + .map()
+
   function toggleTask(id) {
-    // TODO: toggle the task with this id
+    onMutateCourse(index, tasks => tasks.map(t=> (t.id === id ? {...t, isDone: !t.isDone} : t)))
+    
+
   }
-
-
   // 📘 TASK 4 — PART A (Anchor): Implement delete using onMutateCourse + .filter()
   function deleteTask(id) {
     // TODO: delete the task with this id
+    onMutateCourse(index, tasks => tasks.filter((t) => t.id !== id));
   }
 
 
@@ -24,6 +25,12 @@ export default function CourseCard({ course, index, onMutateCourse }) {
     e.preventDefault();
     // TODO: create a new task { id, title, dueDate: date, isDone: false }
     // TODO: append it to existing tasks and reset inputs
+    if(!title.trim()|| !date) return
+    const newTask={id: Math.random().toString(36).slice(2,9),title,dueDate: date, isDone: false};
+
+    onMutateCourse(index,tasks =>[...tasks,newTask]);
+    setTitle("");
+    setDate("");
   }
 
 
@@ -31,20 +38,18 @@ export default function CourseCard({ course, index, onMutateCourse }) {
     <article className="course card">
       <header className="cardHeader">
         <h2>{course.title}</h2>
-        {(tasks.length > 0 && course.task.every(task=>task.isDone))&&<p>All caught up</p>}
+        {(course.tasks.length > 0 && course.tasks.every(t=>t.isDone))&&<p>All caught up</p>}
       </header>
 
       <section className="tasksSection">
-        {/* 📘 TASK 2 — Render Tasks for Each Course */}
-        {/* 🔎 Anchor: You’ll write your code right inside this list. */}
+        {course.tasks.length === 0  ? (<p>No tasks yet. Add your first one!</p>) :(
         <ul className="tasks">
-          {tasks.length === 0  ? (<p>No tasks yet. Add your first one!</p>) :(
-          course.tasks.map(task => <TaskItem key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />))}
+          {course.tasks.map(task => <TaskItem key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} 
+          />)}
         </ul>
+         )}
       </section>
 
-
-      {/* Add Form (provided) */}
       <form onSubmit={addTask} className="newTask">
         <input
           className="titleField"
